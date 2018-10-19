@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>按规则处理Excel</title>
+    <!--<script th:src="@{/js/jquery-3.3.1.min.js}" ></script>-->
+    <script src="js/jquery-3.3.1.min.js" type="text/javascript"></script>
+</head>
+<body>
+<form id="upload" enctype="multipart/form-data" method="post" action="/excelhandle/uploadFileAction">
+    <input type="file" name="uploadFile"/>
+    <input type="hidden" name="id" value="12"/>
+    <input type="button" value="文件上传" onclick="doUpload()"/>
+</form>
+    <input id="downloadButton" type="button" style="display: none" value="下载文件" onclick="doDownload()"/>
+    <form id="download" method="post" action="/excelhandle/downloadFileAction">
+        <input id="downFileAddress" type="hidden" value="" name="downFileAddress"/>
+    </form>
+</form>
+<script type="text/javascript">
+    function doUpload() {
+        // var upl = document.getElementById("upload");
+        // upl.submit();
+        var formdata = new FormData(document.getElementById("upload"));
+        $.ajax({
+            url:"/excelhandle/uploadFileAction",
+            type:"post",
+            data:formdata,
+            contentType:false, //- 必须false才会自动加上正确的Content-Type
+            processData: false, //- 必须false才会避开jQuery对 formdata 的默认处理,XMLHttpRequest会对 formdata 进行正确的处理
+            success:function(data){
+                // alert("文件上传转换成功!");
+                console.log(data.excelFileAddress);
+                if(data.excelFileAddress.length != 0){
+                    var button = document.getElementById("downloadButton");
+                    var downFileAddress = document.getElementById("downFileAddress");
+                    button.style.display="";
+                    downFileAddress.value = data.excelFileAddress;
+                    alert("文件上传转换成功,请及时进行下载!");
+                }else{
+                    alert("文件上传转换失败!");
+                }
+            },
+            error:function(){
+                alert("fail");
+            }
+        });
+    }
+    function doDownload() {
+        var download = document.getElementById("download");
+        var button = document.getElementById("downloadButton");
+        var downFileAddress = document.getElementById("downFileAddress");
+        if(downFileAddress.value != null && downFileAddress.value.length>0){
+            button.style.display="none";
+            download.submit();
+        }else{
+            alert("请确认是否成功上传了文件!");
+            button.style.display="none";
+        }
+        //  window.location.href = "${pageContext.request.contextPath}/user/export?stime="+stime+"&etime="+etime;
+        // $.ajax({
+        //     type : 'POST',
+        //     url: "/downloadFileAction”, // 处理请求的url
+        //     data : "downFileAddress=" +downFileAddress.value, // 提交给服务器的数据
+        //     async : false,
+        //     success : function(data){
+        //     window.open(baseURL + data); // baseURL是工程名，例：/project1
+        //         "${pageContext.request.contextPath}/user/export?stime="+stime+"&etime="+etime
+        // }
+    // });
+    }
+</script>
+</body>
+</html>
