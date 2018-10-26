@@ -2,8 +2,8 @@
 FROM mcr.microsoft.com/java/jdk:8u181-zulu-windowsservercore
 MAINTAINER 379271256@qq.com
 #将打包好的spring程序拷贝到容器中的指定位置
-ADD target/excelhandle-0.0.1-SNAPSHOT.jar C:\Program Files\exclehandle.jar
+ADD target/excelhandle-0.0.1-SNAPSHOT.jar C:/Program Files/exclehandle.jar
 #容器对外暴露8989端口
 #EXPOSE 8989
 #容器启动后需要执行的命令
-CMD ["java", "-Xmx1024m", "-jar", "C:\Program Files\exclehandle.jar"]
+CMD ["java", "-Xmx1024m", "-jar", "C:/Program Files/exclehandle.jar"]
