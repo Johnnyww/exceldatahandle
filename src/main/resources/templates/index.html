@@ -31,7 +31,7 @@
 <form id="upload" enctype="multipart/form-data" method="post" action="/excelhandle/uploadFileAction" role="form">
     <div class="form-group">
         <label for="uploadFile">文件输入</label>
-    <input type="file" name="uploadFile"/>
+    <input type="file" name="uploadFile" id="uploadFile"/>
     <input type="hidden" name="id" value="12"/>
     <!--<input type="button" value="文件上传" onclick="doUpload()"/>-->
         <br/>
@@ -49,6 +49,10 @@
     function doUpload() {
         // var upl = document.getElementById("upload");
         // upl.submit();
+        if ($("#uploadFile").val().length<=0) {
+            alert("请先选择Excel文件!");
+            return;
+        }
         var formdata = new FormData(document.getElementById("upload"));
         $.ajax({
             url: "/excelhandle/uploadFileAction",
