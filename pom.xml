@@ -68,7 +68,20 @@
         <artifactId>poi-ooxml-schemas</artifactId>
         <version>3.17</version>
         </dependency>
-</dependencies>
+        <!-- https://mvnrepository.com/artifact/org.webjars/bootstrap -->
+        <!-- bootstrap -->
+        <dependency>
+            <groupId>org.webjars</groupId>
+            <artifactId>bootstrap</artifactId>
+            <version>3.3.7</version>
+        </dependency>
+        <dependency>
+            <groupId>org.webjars</groupId>
+            <artifactId>jquery</artifactId>
+            <version>3.3.1</version>
+        </dependency>
+
+    </dependencies>
     <build>
         <plugins>
             <plugin>
