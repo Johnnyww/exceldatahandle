@@ -213,14 +213,14 @@ public class ExcelDataHandleServiceImpl implements ExcelDataHandleService {
                                     Integer resultCellIndex = (Integer) entity.getValue();
                                     Cell resultCell = row.createCell(resultCellIndex);
                                     String resultValue = originValue + ":" + currentRuleColumnName.trim();
-//                                    Font fontStyle = workbook.createFont();
 
                                     //设置字体颜色
-//                                    fontStyle.setColor(Font.COLOR_RED);
-//                                    CellStyle originCellStyle = resultCell.getCellStyle();
-//                                    resultCell.getCellStyle().setFont(fontStyle);
+                                    Font fontStyle = workbook.createFont();
+                                    fontStyle.setColor(Font.COLOR_RED);
+                                    CellStyle originCellStyle = resultCell.getCellStyle();
+                                    resultCell.getCellStyle().setFont(fontStyle);
                                     resultCell.setCellValue(resultValue);
-//                                    resultCell.setCellStyle(originCellStyle);
+                                    resultCell.setCellStyle(originCellStyle);
                                     System.out.println(resultValue);
                                 }
                             }
