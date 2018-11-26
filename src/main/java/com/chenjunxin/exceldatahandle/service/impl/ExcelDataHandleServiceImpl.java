@@ -215,12 +215,12 @@ public class ExcelDataHandleServiceImpl implements ExcelDataHandleService {
                                     String resultValue = originValue + ":" + currentRuleColumnName.trim();
 
                                     //设置字体颜色
-                                    Font fontStyle = workbook.createFont();
-                                    fontStyle.setColor(Font.COLOR_RED);
-                                    CellStyle originCellStyle = resultCell.getCellStyle();
-                                    resultCell.getCellStyle().setFont(fontStyle);
+//                                    Font fontStyle = workbook.createFont();
+//                                    fontStyle.setColor(Font.COLOR_RED);
+//                                    CellStyle originCellStyle = resultCell.getCellStyle();
+//                                    resultCell.getCellStyle().setFont(fontStyle);
                                     resultCell.setCellValue(resultValue);
-                                    resultCell.setCellStyle(originCellStyle);
+//                                    resultCell.setCellStyle(originCellStyle);
                                     System.out.println(resultValue);
                                 }
                             }
