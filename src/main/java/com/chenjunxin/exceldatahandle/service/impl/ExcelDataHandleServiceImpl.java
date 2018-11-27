@@ -6,13 +6,14 @@ import com.chenjunxin.exceldatahandle.service.ExcelDataHandleService;
 import com.chenjunxin.exceldatahandle.utils.ExcelUtils;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.*;
-import org.apache.poi.xssf.usermodel.XSSFFont;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.stereotype.Service;
 
-import java.io.*;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.math.BigDecimal;
-import java.net.FileNameMap;
 import java.util.*;
 
 /**
@@ -31,43 +32,43 @@ public class ExcelDataHandleServiceImpl implements ExcelDataHandleService {
     @Override
     public void setMapValueAccordingList(List<String> titleList, Map<String, Integer> columnMap) {
         // 如果存在规则列,则获取列数，从0开始
-        this.judgeListToMapAccordingParams(titleList,columnMap, CloumnEnum.RULE_COLUMN_NAME.getMessage(),
+        this.judgeListToMapAccordingParams(titleList, columnMap, CloumnEnum.RULE_COLUMN_NAME.getMessage(),
                 ColumnMapKeyEnum.RULE_COLUMN_INDEX.getKey());
 
         // 如果存在部门列,则获取列数，从0开始
-        this.judgeListToMapAccordingParams(titleList,columnMap,CloumnEnum.DEPART_COLUMN_NAME.getMessage(),
+        this.judgeListToMapAccordingParams(titleList, columnMap, CloumnEnum.DEPART_COLUMN_NAME.getMessage(),
                 ColumnMapKeyEnum.DEPART_COLUMN_INDEX.getKey());
 
         // 如果存在供应商档案列,则获取列数，从0开始
-        this.judgeListToMapAccordingParams(titleList,columnMap,CloumnEnum.VENDOR_CLOUMN_NAME.getMessage(),
+        this.judgeListToMapAccordingParams(titleList, columnMap, CloumnEnum.VENDOR_CLOUMN_NAME.getMessage(),
                 ColumnMapKeyEnum.VENDOR_CLOUMN_INDEX.getKey());
 
         // 如果存在项目档案列,则获取列数，从0开始
-        this.judgeListToMapAccordingParams(titleList,columnMap,CloumnEnum.PROJECT_CLOUMN_NAME.getMessage(),
+        this.judgeListToMapAccordingParams(titleList, columnMap, CloumnEnum.PROJECT_CLOUMN_NAME.getMessage(),
                 ColumnMapKeyEnum.PROJECT_CLOUMN_INDEX.getKey());
 
         // 如果存在行业列,则获取列数，从0开始
-        this.judgeListToMapAccordingParams(titleList,columnMap,CloumnEnum.INDUSTRY_CLOUMN_NAME.getMessage(),
+        this.judgeListToMapAccordingParams(titleList, columnMap, CloumnEnum.INDUSTRY_CLOUMN_NAME.getMessage(),
                 ColumnMapKeyEnum.INDUSTRY_CLOUMN_INDEX.getKey());
 
         // 如果存在客户档案列,则获取列数，从0开始
-        this.judgeListToMapAccordingParams(titleList,columnMap,CloumnEnum.CUSTOMER_PROFILE_CLOUMN_NAME.getMessage(),
+        this.judgeListToMapAccordingParams(titleList, columnMap, CloumnEnum.CUSTOMER_PROFILE_CLOUMN_NAME.getMessage(),
                 ColumnMapKeyEnum.CUSTOMER_PROFILE_CLOUMN_INDEX.getKey());
 
         // 如果存在辅助核算1列,则获取列数，从0开始
-        this.judgeListToMapAccordingParams(titleList,columnMap,CloumnEnum.FIRST_RESULE_CLOUMN_NAME.getMessage(),
+        this.judgeListToMapAccordingParams(titleList, columnMap, CloumnEnum.FIRST_RESULE_CLOUMN_NAME.getMessage(),
                 ColumnMapKeyEnum.FIRST_RESULE_CLOUMN_INDEX.getKey());
 
         // 如果存在辅助核算2列,则获取列数，从0开始
-        this.judgeListToMapAccordingParams(titleList,columnMap,CloumnEnum.SECOND_RESULE_CLOUMN_NAME.getMessage(),
+        this.judgeListToMapAccordingParams(titleList, columnMap, CloumnEnum.SECOND_RESULE_CLOUMN_NAME.getMessage(),
                 ColumnMapKeyEnum.SECOND_RESULE_CLOUMN_INDEX.getKey());
 
         // 如果存在辅助核算3列,则获取列数，从0开始
-        this.judgeListToMapAccordingParams(titleList,columnMap,CloumnEnum.THIRD_RESULE_CLOUMN_NAME.getMessage(),
+        this.judgeListToMapAccordingParams(titleList, columnMap, CloumnEnum.THIRD_RESULE_CLOUMN_NAME.getMessage(),
                 ColumnMapKeyEnum.THIRD_RESULE_CLOUMN_INDEX.getKey());
 
         // 如果存在辅助核算4列,则获取列数，从0开始
-        this.judgeListToMapAccordingParams(titleList,columnMap,CloumnEnum.FOURTH_RESULE_CLOUMN_NAME.getMessage(),
+        this.judgeListToMapAccordingParams(titleList, columnMap, CloumnEnum.FOURTH_RESULE_CLOUMN_NAME.getMessage(),
                 ColumnMapKeyEnum.FOURTH_RESULE_CLOUMN_INDEX.getKey());
 
     }
@@ -83,7 +84,7 @@ public class ExcelDataHandleServiceImpl implements ExcelDataHandleService {
     @Override
     public void judgeListToMapAccordingParams(List<String> titleList, Map<String, Integer> columnMap, String listColumnName, String columnMapKey) {
         // 如果titleList存在listColumnName列,则获取列数，从0开始,并且获取index根据传入的columnMapKey添加入columnMap中
-        if (titleList.contains(listColumnName)){
+        if (titleList.contains(listColumnName)) {
             int index = titleList.indexOf(listColumnName);
             if (index != -1) {
                 columnMap.put(columnMapKey, index);
@@ -98,28 +99,28 @@ public class ExcelDataHandleServiceImpl implements ExcelDataHandleService {
      */
     @Override
     public Map<String, Integer> selectResultColumnToMap(Map<String, Integer> columnMap) {
-        Map<String,Integer> resultColumnMap = new LinkedHashMap<>();
-        if (columnMap.containsKey(ColumnMapKeyEnum.FIRST_RESULE_CLOUMN_INDEX.getKey())){
+        Map<String, Integer> resultColumnMap = new LinkedHashMap<>();
+        if (columnMap.containsKey(ColumnMapKeyEnum.FIRST_RESULE_CLOUMN_INDEX.getKey())) {
             resultColumnMap.put(ColumnMapKeyEnum.FIRST_RESULE_CLOUMN_INDEX.getKey(),
                     columnMap.get(ColumnMapKeyEnum.FIRST_RESULE_CLOUMN_INDEX.getKey()));
         }
-        if (columnMap.containsKey(ColumnMapKeyEnum.SECOND_RESULE_CLOUMN_INDEX.getKey())){
+        if (columnMap.containsKey(ColumnMapKeyEnum.SECOND_RESULE_CLOUMN_INDEX.getKey())) {
             resultColumnMap.put(ColumnMapKeyEnum.SECOND_RESULE_CLOUMN_INDEX.getKey(),
                     columnMap.get(ColumnMapKeyEnum.SECOND_RESULE_CLOUMN_INDEX.getKey()));
         }
-        if (columnMap.containsKey(ColumnMapKeyEnum.THIRD_RESULE_CLOUMN_INDEX.getKey())){
+        if (columnMap.containsKey(ColumnMapKeyEnum.THIRD_RESULE_CLOUMN_INDEX.getKey())) {
             resultColumnMap.put(ColumnMapKeyEnum.THIRD_RESULE_CLOUMN_INDEX.getKey(),
                     columnMap.get(ColumnMapKeyEnum.THIRD_RESULE_CLOUMN_INDEX.getKey()));
         }
-        if (columnMap.containsKey(ColumnMapKeyEnum.FOURTH_RESULE_CLOUMN_INDEX.getKey())){
+        if (columnMap.containsKey(ColumnMapKeyEnum.FOURTH_RESULE_CLOUMN_INDEX.getKey())) {
             resultColumnMap.put(ColumnMapKeyEnum.FOURTH_RESULE_CLOUMN_INDEX.getKey(),
                     columnMap.get(ColumnMapKeyEnum.FOURTH_RESULE_CLOUMN_INDEX.getKey()));
         }
         return resultColumnMap;
     }
 
-@Override
-    public void handleExcel(InputStream input, OutputStream out, String fileName) throws Exception{
+    @Override
+    public void handleExcel(InputStream input, OutputStream out, String fileName) throws Exception {
         List<String> titleList = new ArrayList<>();
         Map<String, Integer> columnMap = new HashMap<>();
         try {
@@ -129,9 +130,9 @@ public class ExcelDataHandleServiceImpl implements ExcelDataHandleService {
 //            FileOutputStream out=new FileOutputStream("F:\\开票凭证模板2.xlsx");  //向F:\23.xlsx中写数据
 //            Workbook workbook = new XSSFWorkbook(input);
             Workbook workbook = null;
-            if(ExcelUtils.isExcel2007(fileName)){
+            if (ExcelUtils.isExcel2007(fileName)) {
                 workbook = new XSSFWorkbook(input);
-            }else {
+            } else {
                 workbook = new HSSFWorkbook(input);
             }
 
@@ -143,10 +144,10 @@ public class ExcelDataHandleServiceImpl implements ExcelDataHandleService {
             //获取第一行标题
             for (int a = 0; a < sheet.getRow(0).getPhysicalNumberOfCells(); a++) {
                 Cell cell = sheet.getRow(0).getCell(a);
-                if(cell != null && !cell.equals("")){
+                if (cell != null && !cell.equals("")) {
                     titleList.add(a, cell.getStringCellValue());
-                }else{
-                    titleList.add(a,"无意义占位值,替换空值");
+                } else {
+                    titleList.add(a, "无意义占位值,替换空值");
                 }
             }
             titleList.forEach(w -> System.out.print(w + ","));
@@ -160,13 +161,13 @@ public class ExcelDataHandleServiceImpl implements ExcelDataHandleService {
                 Integer ruleIndex = columnMap.get(ColumnMapKeyEnum.RULE_COLUMN_INDEX.getKey());
                 for (int j = 1; j < physicalNumberOfRows; j++) {
                     Row row = sheet.getRow(j);
-                    System.out.println("第"+j+"行");
+                    System.out.println("第" + j + "行");
                     if (ruleIndex != null && ruleIndex != -1) {
                         Cell cell = row.getCell(ruleIndex);
                         String ruleString;
-                        if(cell != null && !cell.equals("")){
-                            ruleString= cell.getStringCellValue();
-                        }else{
+                        if (cell != null && !cell.equals("")) {
+                            ruleString = cell.getStringCellValue();
+                        } else {
                             break;
                         }
                         if (!ruleString.isEmpty()) {
@@ -176,7 +177,7 @@ public class ExcelDataHandleServiceImpl implements ExcelDataHandleService {
                                 Map.Entry entity = (Map.Entry) it.next();
 //                                System.out.println("[ key = " + entity.getKey() +
 //                                        ", value = " + entity.getValue() + " ]");
-                                if(m >= ruleArray.length){
+                                if (m >= ruleArray.length) {
                                     break;
                                 }
                                 String currentRuleColumnName = ruleArray[m];
@@ -214,13 +215,14 @@ public class ExcelDataHandleServiceImpl implements ExcelDataHandleService {
                                     Cell resultCell = row.createCell(resultCellIndex);
                                     String resultValue = originValue + ":" + currentRuleColumnName.trim();
 
-                                    //设置字体颜色
-//                                    Font fontStyle = workbook.createFont();
-//                                    fontStyle.setColor(Font.COLOR_RED);
-//                                    CellStyle originCellStyle = resultCell.getCellStyle();
-//                                    resultCell.getCellStyle().setFont(fontStyle);
+                                    // 创建并设置字体颜色
+                                    Font font = workbook.createFont();
+                                    font.setColor(Font.COLOR_RED);
+                                    // 创建一个单元格样式
+                                    CellStyle style = workbook.createCellStyle();
+                                    style.setFont(font);
                                     resultCell.setCellValue(resultValue);
-//                                    resultCell.setCellStyle(originCellStyle);
+                                    resultCell.setCellStyle(style);
                                     System.out.println(resultValue);
                                 }
                             }
