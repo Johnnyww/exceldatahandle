@@ -55,6 +55,10 @@ public class ExcelDataHandleServiceImpl implements ExcelDataHandleService {
         this.judgeListToMapAccordingParams(titleList, columnMap, CloumnEnum.CUSTOMER_PROFILE_CLOUMN_NAME.getMessage(),
                 ColumnMapKeyEnum.CUSTOMER_PROFILE_CLOUMN_INDEX.getKey());
 
+        // 如果存在银行账户列,则获取列数，从0开始
+        this.judgeListToMapAccordingParams(titleList, columnMap, CloumnEnum.BANK_ACCOUNT_CLOUMN_NAME.getMessage(),
+                ColumnMapKeyEnum.BANK_ACCOUNT_CLOUMN_INDEX.getKey());
+
         // 如果存在辅助核算1列,则获取列数，从0开始
         this.judgeListToMapAccordingParams(titleList, columnMap, CloumnEnum.FIRST_RESULE_CLOUMN_NAME.getMessage(),
                 ColumnMapKeyEnum.FIRST_RESULE_CLOUMN_INDEX.getKey());

@@ -11,6 +11,7 @@ import graphql.schema.idl.TypeDefinitionRegistry;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 
 import static graphql.schema.idl.RuntimeWiring.newRuntimeWiring;
 
@@ -81,5 +82,19 @@ public class HelloWorld {
         i = i++;
         System.out.println("i=" + i);//0
         System.out.println("================");
+
+
+        int j = 3;
+        String p = "3";
+        if(p.equals(String.valueOf(j))){
+            System.out.println("666666");
+        }
+
+        ArrayList<Integer> arrayList = new ArrayList<>();
+        for(int w=0;w<9;w++){
+            arrayList.add(w);
+        }
+        arrayList.add(2,11);
+        arrayList.forEach(s-> System.out.println(s));
     }
 }
