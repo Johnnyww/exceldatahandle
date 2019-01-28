@@ -63,14 +63,16 @@
             success: function (data) {
                 // alert("文件上传转换成功!");
                 console.log(data.excelFileAddress);
-                if (data.excelFileAddress.length != 0) {
-                    var button = document.getElementById("downloadButton");
-                    var downFileAddress = document.getElementById("downFileAddress");
-                    button.style.display = "";
-                    downFileAddress.value = data.excelFileAddress;
-                    alert("文件上传转换成功,请及时进行下载!");
-                } else {
-                    alert("文件上传转换失败!");
+                if (data.successFlag == true) {
+                    if (data.excelFileAddress.length != 0) {
+                        var button = document.getElementById("downloadButton");
+                        var downFileAddress = document.getElementById("downFileAddress");
+                        button.style.display = "";
+                        downFileAddress.value = data.excelFileAddress;
+                        alert("文件上传转换成功,请及时进行下载!");
+                    }
+                }else {
+                        alert("文件上传转换失败!"+data.errorInfo);
                 }
             },
             error: function () {

@@ -51,16 +51,21 @@ public class ImportExcelController {
         try {
             fis = uploadFile.getInputStream();
 //            String excelFileAddress = "/media/uploadfile/" + uploadFile.getOriginalFilename();
-//             excelFileAddress = "F:\\upload\\" + uploadFile.getOriginalFilename();
-            excelFileAddress = "/media/uploadfile/" + uploadFile.getOriginalFilename();
+             excelFileAddress = "F:\\upload\\" + uploadFile.getOriginalFilename();
+//            excelFileAddress = "/media/uploadfile/" + uploadFile.getOriginalFilename();
             outputStream = new FileOutputStream(excelFileAddress);
             excelDataHandleService.handleExcel(fis, outputStream, uploadFile.getOriginalFilename());
             map.put("excelFileAddress", uploadFile.getOriginalFilename());
+            map.put("successFlag","true");
 //            IOUtils.copy(fis, outputStream);
         } catch (IOException e) {
             e.printStackTrace();
+            map.put("successFlag","false");
+            map.put("errorInfo",e.getMessage());
         } catch (Exception e) {
             e.printStackTrace();
+            map.put("successFlag","false");
+            map.put("errorInfo",e.getMessage());
         } finally {
             if (fis != null) {
                 try {

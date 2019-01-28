@@ -7,6 +7,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 @RunWith(SpringRunner.class)
 @SpringBootTest
 public class ExceldatahandleApplicationTests {
@@ -121,4 +128,94 @@ public class ExceldatahandleApplicationTests {
 //
 //
 //    }
+
+    @Test
+    public void regexMatches() {
+
+        // 按指定模式在字符串查找
+//        String line = "This order was placed for QT3000! OK?";
+        String line = "欣凯3栋1404";
+//        String pattern = "(\\D*)(\\d+)(.*)";
+        String pattern2 = "[^\\d]+([\\d]+).*";
+        String pattern = "([^\\d]+)([\\d]+.)([\\d]+)*";
+        // 创建 Pattern 对象
+        Pattern r = Pattern.compile(pattern);
+
+        // 现在创建 matcher 对象
+        Matcher m = r.matcher(line);
+        System.out.println(m.groupCount());
+        if (m.find()) {
+            System.out.println("Found value: " + m.group(0));
+            System.out.println("Found value: " + m.group(1));
+            System.out.println("Found value: " + m.group(2));
+            System.out.println("Found value: " + m.group(3));
+//            System.out.println("Found value: " + m.group(4));
+        } else {
+            System.out.println("NO MATCH");
+        }
+    }
+
+
+    @Test
+    public void testStringBuffer() {
+        String a = "欣凯";
+        String b = "3栋";
+        Integer c = 1404;
+        Integer d = 1605;
+        StringBuffer stringBuffer = new StringBuffer(a);
+        stringBuffer.append(b);
+        int i = stringBuffer.length();
+        System.out.println(stringBuffer.toString());
+        System.out.println("buffer length i is :" + i);
+        stringBuffer.append(c);
+        int k = stringBuffer.length();
+        System.out.println(stringBuffer.toString());
+        System.out.println("buffer length k is :" + k);
+//        stringBuffer.delete(i,k);
+        stringBuffer.replace(i, k, String.valueOf(d));
+        System.out.println(stringBuffer.toString());
+    }
+
+    @Test
+    public void testConcatStr() {
+        List<Integer> list = new ArrayList<>();
+        for (int i = 0; i <= 50000; i++) {
+            int w = i + 1000;
+            list.add(w);
+        }
+        String diffTower = "欣凯";
+        String diffBuildingInfo = "3栋";
+        String meetingAddress = "欣凯3栋1404";
+        StringBuffer stringBuffer = new StringBuffer(diffTower);
+        stringBuffer.append(diffBuildingInfo);
+        int w = stringBuffer.length();
+        int k = 0;
+        long t1 = System.nanoTime();
+        //这里是初始字符串定义
+        for (int i = 0; i <= 50000; i++) {
+            //这里是字符串拼接代码
+            if (meetingAddress.contains(diffTower + diffBuildingInfo + list.get(i))) {
+                System.out.println(diffTower + diffBuildingInfo + list.get(i));
+                System.out.println("+++++");
+            }
+//            if(i == 0){
+//                stringBuffer.append(list.get(i));
+//                k = stringBuffer.length();
+//            }else {
+//                stringBuffer.replace(w,k,String.valueOf(list.get(i)));
+//                k = stringBuffer.length();
+//            }
+//
+//            if (meetingAddress.contains(stringBuffer.toString() )) {
+//                System.out.println(stringBuffer.toString());
+//                System.out.println("+++++");
+//            }
+        }
+        long t2 = System.nanoTime();
+        System.out.println("cost:" + (t2 - t1));
+        final String p = "666";
+        System.out.println(p);
+        LocalDate date = LocalDate.now();
+        System.out.println(date.format(DateTimeFormatter.BASIC_ISO_DATE));
+    }
 }

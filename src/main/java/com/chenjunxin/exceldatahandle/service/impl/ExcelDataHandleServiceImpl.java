@@ -95,6 +95,9 @@ public class ExcelDataHandleServiceImpl implements ExcelDataHandleService {
                                         break;
                                     } else {
                                         // 以防万一去掉收尾空格
+                                        if(!columnMap.containsKey(currentRuleColumnName.trim())){
+                                            throw new Exception("Excel表中不包含列名为:"+currentRuleColumnName.trim()+"的列导致在"+j+"行的数据处理中出错!");
+                                        }
                                         Integer originIndex = columnMap.get(currentRuleColumnName.trim());
                                         Cell originCell = row.getCell(originIndex);
                                         String originValue = "";
@@ -145,10 +148,8 @@ public class ExcelDataHandleServiceImpl implements ExcelDataHandleService {
             out.flush();
             workbook.write(out);
             out.close();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (Exception e) {
+            throw e;
         }
     }
 

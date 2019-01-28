@@ -11,7 +11,7 @@ import graphql.schema.idl.TypeDefinitionRegistry;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
+import java.util.*;
 
 import static graphql.schema.idl.RuntimeWiring.newRuntimeWiring;
 
@@ -90,11 +90,25 @@ public class HelloWorld {
             System.out.println("666666");
         }
 
-        ArrayList<Integer> arrayList = new ArrayList<>();
+        List<Integer> arrayList = new ArrayList<>();
         for(int w=0;w<9;w++){
             arrayList.add(w);
         }
         arrayList.add(2,11);
-        arrayList.forEach(s-> System.out.println(s));
+        arrayList.add(3,12);
+        System.out.println(arrayList.indexOf(11));
+//        List<String> listOfStuffFiltered = Optional.ofNullable(listOfStuff)
+//                .orElseGet(Collections::emptyList)
+//                .stream()
+//                .filter(Objects::nonNull)
+//                .collect(Collectors.toList());
+        Optional.ofNullable(arrayList).orElseGet(Collections::emptyList).stream().filter(s->s != null ).forEach(s-> System.out.println(s));
+
+
+        Map<Integer,Integer> map  = new HashMap<>();
+        for(int k=0;k<10;k++){
+            map.put(k,k);
+        }
+        System.out.println(map.get(11));
     }
 }
