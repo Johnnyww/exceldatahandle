@@ -31,10 +31,16 @@ public class ExcelDataHandleServiceImpl implements ExcelDataHandleService {
 //            FileOutputStream out=new FileOutputStream("F:\\开票凭证模板2.xlsx");  //向F:\23.xlsx中写数据
 //            Workbook workbook = new XSSFWorkbook(input);
             Workbook workbook = null;
-            if (ExcelUtils.isExcel2007(fileName)) {
-                workbook = new XSSFWorkbook(input);
-            } else {
-                workbook = new HSSFWorkbook(input);
+
+            // 验证是否Excel文件
+            if(ExcelUtils.validateExcel(fileName)){
+                if (ExcelUtils.isExcel2007(fileName)) {
+                    workbook = new XSSFWorkbook(input);
+                } else if (ExcelUtils.isExcel2003(fileName)){
+                    workbook = new HSSFWorkbook(input);
+                }
+            }else {
+                throw new Exception("文件类型不属于Excel文件!");
             }
 
             // 通过索引读取第一张工作表
@@ -139,7 +145,6 @@ public class ExcelDataHandleServiceImpl implements ExcelDataHandleService {
                                         System.out.println(resultValue);
                                     }
                                 }
-
                             }
                         }
                     }

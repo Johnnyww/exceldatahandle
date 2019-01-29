@@ -5,6 +5,7 @@ import org.apache.poi.util.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -30,6 +31,12 @@ public class ImportExcelController {
     @Autowired
     ExcelDataHandleService excelDataHandleService;
 
+    @Value("${exceldatahandle.uploadFile.url}")
+    private String uploadFileUrl;
+
+    @Value("${exceldatahandle.downloadFile.url}")
+    private String downloadFileUrl;
+
     @RequestMapping("index")
     public String index() {
         return "index";
@@ -50,14 +57,11 @@ public class ImportExcelController {
         String excelFileAddress = "";
         try {
             fis = uploadFile.getInputStream();
-//            String excelFileAddress = "/media/uploadfile/" + uploadFile.getOriginalFilename();
-//             excelFileAddress = "F:\\upload\\" + uploadFile.getOriginalFilename();
-            excelFileAddress = "/media/uploadfile/" + uploadFile.getOriginalFilename();
+            excelFileAddress = uploadFileUrl + uploadFile.getOriginalFilename();
             outputStream = new FileOutputStream(excelFileAddress);
             excelDataHandleService.handleExcel(fis, outputStream, uploadFile.getOriginalFilename());
             map.put("excelFileAddress", uploadFile.getOriginalFilename());
             map.put("successFlag","true");
-//            IOUtils.copy(fis, outputStream);
         } catch (IOException e) {
             e.printStackTrace();
             map.put("successFlag","false");
@@ -87,14 +91,6 @@ public class ImportExcelController {
 
     @RequestMapping(value = "/downloadFileAction", method = RequestMethod.POST)
     public void downloadFileAction(HttpServletRequest request, HttpServletResponse response, @RequestParam("downFileAddress") String downFileAddress) {
-//        response.addHeader("Content-Disposition",
-//                "attachment;filename=" + new String(name.getBytes("UTF-8"), "ISO8859-1"));
-//        response.setContentType("application/octet-stream");
-//        OutputStream toClient = null;
-//        toClient = new BufferedOutputStream(response.getOutputStream());
-//        ExcelUtil.exportExcel(findAll, str, templatePath, response.getOutputStream());
-//        toClient.flush();
-//        response.getOutputStream().close();
         if (downFileAddress == null || downFileAddress.isEmpty()) {
             return;
         }
@@ -102,8 +98,7 @@ public class ImportExcelController {
         response.setContentType("application/octet-stream");
         FileInputStream fis = null;
         try {
-//            File file = new File("F:\\upload\\" + downFileAddress);
-            File file = new File("/media/uploadfile/" + downFileAddress);
+            File file = new File(downloadFileUrl + downFileAddress);
             fis = new FileInputStream(file);
             response.setHeader("Content-Disposition", "attachment; filename=" + new String(downFileAddress.getBytes("gb2312"), "ISO8859-1"));
             IOUtils.copy(fis, response.getOutputStream());

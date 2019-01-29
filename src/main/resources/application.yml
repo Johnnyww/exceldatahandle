@@ -12,7 +12,8 @@ spring:
         encoding: UTF-8
         # \u6A21\u677F\u7684\u6A21\u5F0F
         mode: HTML5
-
+  profiles:
+            active: ${active.file}
 server:
   port: 8989
   servlet:

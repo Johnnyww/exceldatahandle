@@ -1,0 +1,4 @@
+## 上传文件存放的盘符路径
+exceldatahandle.uploadFile.url: /media/uploadfile/
+## 下载文件的盘符路径
+exceldatahandle.downloadFile.url: /media/uploadfile/
