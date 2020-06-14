@@ -10,7 +10,15 @@ import java.util.Map;
  */
 public interface ExcelDataHandleService {
 
-     void handleExcel(InputStream input, OutputStream out,String fileName) throws Exception;
+    /**
+     *
+     * @param input
+     * @param out
+     * @param fileName
+     * @param trackId 日志id,方便定位
+     * @throws Exception
+     */
+     void handleExcel(InputStream input, OutputStream out,String fileName,String trackId) throws Exception;
 
 
     /**

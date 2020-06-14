@@ -6,9 +6,11 @@ ENV TZ=Asia/Shanghai
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 #将打包好的spring程序拷贝到容器中的指定位置
 ADD target/excelhandle-0.0.1-SNAPSHOT.jar /exclehandle.jar
+RUN mkdir /test
 #容器对外暴露8989端口
 #EXPOSE 8989
 #容器启动后需要执行的命令
+#CMD ["mkdir", "/logs"]
 CMD ["java", "-Xmx1024m", "-jar", "/exclehandle.jar"]
 
 

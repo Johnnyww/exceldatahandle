@@ -1,17 +1,15 @@
 #上传文件存放的盘符路径与下载文件的盘符路径
 exceldatahandle:
   uploadFile:
-    url: /media/uploadfile/
+    url: F:\\upload\\
   downloadFile:
-    url: /media/uploadfile/
+    url: F:\\upload\\
 
 #当前Root日志级别变量
 logging:
-  config:
-    filepath: classpath:log4j2-spring-prod.xml
   springframework:
     level: INFO
   mybatis:
     level: INFO
   root:
-    level: INFO
+    level: DEBUG

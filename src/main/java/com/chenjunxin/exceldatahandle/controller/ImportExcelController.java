@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -18,6 +19,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 /**
  * Created by chenjunxin on 2018/10/18
@@ -26,7 +28,7 @@ import java.util.Map;
 @RequestMapping
 public class ImportExcelController {
 
-    private final Logger log = LoggerFactory.getLogger(ImportExcelController.class);
+    private static final Logger logger = LoggerFactory.getLogger(ImportExcelController.class);
 
     @Autowired
     ExcelDataHandleService excelDataHandleService;
@@ -55,19 +57,23 @@ public class ImportExcelController {
         InputStream fis = null;
         OutputStream outputStream = null;
         String excelFileAddress = "";
+        // 生成日志跟踪ID，便于跟踪单次请求
+        String traceId = UUID.randomUUID().toString();
+        StringBuilder strBuilder = new StringBuilder(traceId);
+        strBuilder.append(" ");
+        strBuilder.append(uploadFile.getOriginalFilename());
         try {
             fis = uploadFile.getInputStream();
             excelFileAddress = uploadFileUrl + uploadFile.getOriginalFilename();
             outputStream = new FileOutputStream(excelFileAddress);
-            excelDataHandleService.handleExcel(fis, outputStream, uploadFile.getOriginalFilename());
+            excelDataHandleService.handleExcel(fis, outputStream, uploadFile.getOriginalFilename(),traceId);
             map.put("excelFileAddress", uploadFile.getOriginalFilename());
             map.put("successFlag","true");
-        } catch (IOException e) {
-            e.printStackTrace();
-            map.put("successFlag","false");
-            map.put("errorInfo",e.getMessage());
+            strBuilder.append(": 上传文件处理成功");
+            logger.info(strBuilder.toString());
         } catch (Exception e) {
-            e.printStackTrace();
+            strBuilder.append(": 上传文件处理出现异常");
+            logger.error(strBuilder.toString(),e);
             map.put("successFlag","false");
             map.put("errorInfo",e.getMessage());
         } finally {
@@ -75,14 +81,22 @@ public class ImportExcelController {
                 try {
                     fis.close();
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    // StringBuilder重用 清空数据
+                    strBuilder.delete(0,strBuilder.length());
+                    strBuilder.append(traceId);
+                    strBuilder.append(": InputStream close have exception");
+                    logger.error(strBuilder.toString(),e);
                 }
             }
             if (outputStream != null) {
                 try {
                     outputStream.close();
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    // StringBuilder重用 清空数据
+                    strBuilder.delete(0,strBuilder.length());
+                    strBuilder.append(traceId);
+                    strBuilder.append(": FileOutputStream close have exception");
+                    logger.error(strBuilder.toString(),e);
                 }
             }
         }
@@ -91,28 +105,30 @@ public class ImportExcelController {
 
     @RequestMapping(value = "/downloadFileAction", method = RequestMethod.POST)
     public void downloadFileAction(HttpServletRequest request, HttpServletResponse response, @RequestParam("downFileAddress") String downFileAddress) {
-        if (downFileAddress == null || downFileAddress.isEmpty()) {
+        if (StringUtils.isEmpty(downFileAddress)) {
             return;
         }
         response.setCharacterEncoding(request.getCharacterEncoding());
         response.setContentType("application/octet-stream");
         FileInputStream fis = null;
+        StringBuilder strBuilder = new StringBuilder(downloadFileUrl + downFileAddress);
+        String downloadPath = strBuilder.toString();
         try {
-            File file = new File(downloadFileUrl + downFileAddress);
+            File file = new File(downloadPath);
             fis = new FileInputStream(file);
             response.setHeader("Content-Disposition", "attachment; filename=" + new String(downFileAddress.getBytes("gb2312"), "ISO8859-1"));
             IOUtils.copy(fis, response.getOutputStream());
             response.flushBuffer();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
         } catch (IOException e) {
-            e.printStackTrace();
+            strBuilder.append(": 下载文件出现异常");
+            logger.error(strBuilder.toString(),e);
         } finally {
             if (fis != null) {
                 try {
                     fis.close();
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    String errorStr = downloadPath + ": FileInputStream close have exception";
+                    logger.error(errorStr,e);
                 }
             }
         }

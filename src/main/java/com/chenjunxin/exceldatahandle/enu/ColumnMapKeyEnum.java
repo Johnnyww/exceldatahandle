@@ -31,9 +31,4 @@ public enum ColumnMapKeyEnum {
         return key;
     }
 
-//    public void setKey(String key) {
-//        this.key = key;
-//    }
-
-
 }

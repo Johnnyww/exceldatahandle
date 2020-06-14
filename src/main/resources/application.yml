@@ -11,11 +11,24 @@ spring:
         suffix: .html
         encoding: UTF-8
         # \u6A21\u677F\u7684\u6A21\u5F0F
-        mode: HTML5
+        mode: HTML
   profiles:
+#    -Dspring.profiles.active=prod or -Dactive.file=dev-linux
             active: ${active.file}
+
+# 指定 Log4j2 配置文件
+logging:
+  config: ${logging.config.filepath}
+  level:
+    org:
+      springframework: ${logging.springframework.level}
+      mybatis: ${logging.mybatis.level}
+    root: ${logging.root.level}
+
+#  level:
+#    com.chenjunxin: warn
+
 server:
   port: 8989
   servlet:
     context-path: /excelhandle
-

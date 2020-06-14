@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--日志级别以及优先级排序: OFF > FATAL > ERROR > WARN > INFO > DEBUG > TRACE > ALL -->
+<!--Configuration后面的status属性，这个用于设置log4j2自身内部的信息输出，可以不设置，当设置成trace时，你会看到log4j2内部各种详细输出-->
+<!--monitorInterval：monitorInterval=“N” Log4j2自动间隔 N 秒检测配置文件是否修改，有修改则自动重新加载配置 可以不设置 -->
+<configuration monitorInterval="30">
+    <!-- 变量配置 -->
+    <Properties>
+<!--        就是通过正则表达式来格式化日志,后面的参数来调整输出的时间格式-->
+<!--        %d 表示时间，默认情况下表示打印完整时间戳 2012-11-02 14:34:02,123，可以调整 %d 后面的参数来调整输出的时间格式-->
+<!--        %p 表示输出日志的等级，可以使用 %highlight{%p} 来高亮显示日志级别-->
+<!--        %-5level 输出日志级别，-5表示左对齐并且固定输出5个字符，如果不足在右边补0-->
+<!--        %logger 输出logger名称，因为Root Logger没有名称，所以没有输出-->
+<!--        %c 用来输出类名，默认输出的是完整的包名和类名，%c{1.} 输出包名的首字母和完整类名-->
+<!--        %t 表示线程名称-->
+<!--        %m 表示日志内容，%msg 日志文本-->
+<!--        %M 表示方法名称-->
+<!--        %n 表示换行符-->
+<!--        %L 表示打印日志的代码行数-->
+        <!-- 日志输出格式 -->
+<!--        <property name="LOG_PATTERN" value="%d{yyyy-MM-dd HH:mm:ss.SSS} %highlight{%p} [%t] %highlight{%c{1.}.%M(%L)}: %msg%n"/>-->
+<!--        -Dlog4j.skipJansi=false-->
+<!--        控制台输出高亮，其他输出不使用ANSI StyleId高亮-->
+        <property name="LOG_CONSOLE_PATTERN" value="%d{yyyy-MM-dd HH:mm:ss.SSS} %highlight{%p} [%t] %highlight{%c{1.}.%M(%L)}: %msg%n"/>
+        <property name="LOG_PATTERN" value="%d{yyyy-MM-dd HH:mm:ss.SSS} %p [%t] %c{1.}.%M(%L): %msg%n"/>
+        <property name="LOG_CHARSET" value="UTF-8"/>
+        <!-- 日志输出到文件的路径和文件名 根据项目情况更改 value 值 -->
+<!--        <property name="LOG_FILE_PATH" value="${sys:user.home}/logs"/>-->
+<!--        相对路径和绝对路径,建议不要使用相对路径，相对路径是根据当前项目路径开始的。-->
+        <property name="LOG_FILE_PATH" value="/tmp/logs"/>
+        <property name="LOG_FILE_NAME" value="log4j2"/>
+    </Properties>
+    <!--先定义所有的appender-->
+    <Appenders>
+        <!--这个输出控制台的配置-->
+        <console name="Console" target="SYSTEM_OUT">
+            <!--输出日志的格式-->
+<!--            <PatternLayout pattern="[%d{HH:mm:ss:SSS}] [%p] - %l - %m%n"/>-->
+            <PatternLayout pattern="${LOG_CONSOLE_PATTERN}" charset="${LOG_CHARSET}"/>
+            <!-- onMatch="ACCEPT" 只输出 level 级别及级别优先级更高的 Log , onMismatch="DENY" 其他拒绝输出  -->
+<!--            <ThresholdFilter level="debug" onMatch="ACCEPT" onMismatch="DENY"/>-->
+        </console>
+
+
+        <!-- 这个会打印出所有的info及以下级别的信息，每次大小超过size，则这size大小的日志会自动存入按年份-月份建立的文件夹下面并进行压缩，作为存档-->
+<!--        fileName：来指定文件位置，文件或目录不存在则会自动创建。-->
+<!--        immediateFlush：是否每次写入都要立刻刷新到硬盘中。默认 true，如果使用默认值可能会影响性能。-->
+        <RollingRandomAccessFile name="InfoLog" fileName="${LOG_FILE_PATH}/info.log"
+                     filePattern="${LOG_FILE_PATH}/$${date:yyyy-MM}/info-%d{yyyy-MM-dd}-%i.log">
+            <PatternLayout pattern="${LOG_PATTERN}" charset="${LOG_CHARSET}"/>
+            <!--控制台只输出level及以上级别的信息（onMatch），其他的直接拒绝（onMismatch）-->
+<!--            <ThresholdFilter level="info" onMatch="ACCEPT" onMismatch="DENY"/>-->
+            <Filters>
+                <!--将WARN及其以上级别的日志给DENY掉-->
+                <ThresholdFilter level="WARN"  onMatch="DENY"   onMismatch="NEUTRAL"/>
+                <!--ACCEPT info级别的日志-->
+                <ThresholdFilter level="INFO" onMatch="ACCEPT" onMismatch="DENY" />
+            </Filters>
+            <Policies>
+                <!-- interval="N" ，N小时滚动一次，默认是1 hour-->
+<!--                <TimeBasedTriggeringPolicy interval="1"/>-->
+                <!-- size="100MB" 指定日志输出文件大小，若大小超过size，则日志会自动存入按 filePattern 规则建立的文件夹下面并进行压缩 -->
+                <SizeBasedTriggeringPolicy size="100 MB"/>
+            </Policies>
+            <!-- DefaultRolloverStrategy 不设置的情况下，默认为最多同一文件夹下7个 filePattern 规矩建立的压缩文件,多于 max 的值将用新的文件覆盖就的压缩文件 -->
+            <DefaultRolloverStrategy max = "10"/>
+        </RollingRandomAccessFile>
+        <RollingRandomAccessFile name="WarnLog" fileName="${LOG_FILE_PATH}/warn.log"
+                     filePattern="${LOG_FILE_PATH}/$${date:yyyy-MM}/warn-%d{yyyy-MM-dd}-%i.log">
+            <PatternLayout pattern="${LOG_PATTERN}" charset="${LOG_CHARSET}"/>
+<!--            <ThresholdFilter level="warn" onMatch="ACCEPT" onMismatch="DENY"/>-->
+            <Filters>
+                <!--将ERROR及其以上级别的日志给DENY掉-->
+                <ThresholdFilter level="ERROR" onMatch="DENY" onMismatch="NEUTRAL"/>
+                <!--ACCEPT warn级别的日志-->
+                <ThresholdFilter level="WARN" onMatch="ACCEPT" onMismatch="DENY"/>
+            </Filters>
+            <Policies>
+                <TimeBasedTriggeringPolicy/>
+                <SizeBasedTriggeringPolicy size="100 MB"/>
+            </Policies>
+            <DefaultRolloverStrategy max = "10"/>
+        </RollingRandomAccessFile>
+        <RollingRandomAccessFile name="ErrorLog" fileName="${LOG_FILE_PATH}/error.log"
+                     filePattern="${LOG_FILE_PATH}/$${date:yyyy-MM}/error-%d{yyyy-MM-dd}-%i.log">
+            <PatternLayout pattern="${LOG_PATTERN}" charset="${LOG_CHARSET}"/>
+            <ThresholdFilter level="error" onMatch="ACCEPT" onMismatch="DENY"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy/>
+                <SizeBasedTriggeringPolicy size="100 MB"/>
+            </Policies>
+            <DefaultRolloverStrategy max = "10"/>
+        </RollingRandomAccessFile>
+    </Appenders>
+
+    <!--然后定义Logger，只有定义了Logger并引入的Appender，Appender才会生效-->
+    <loggers>
+        <!--过滤掉spring和mybatis的一些无用的DEBUG信息-->
+        <!-- Logger 节点用来单独指定 package 包下的 class 的日志输出格式等信息 -->
+<!--        <logger  name="org.springframework" level="INFO" additivity="false">-->
+<!--            &lt;!&ndash; 指定 org.springframework 的 level 及更高优先级的日志只在控制台输出 &ndash;&gt;-->
+<!--            &lt;!&ndash; additivity="false" 只在自定义的Appender中进行输出，不然Logger默认继承Root,可能会有两边重复输出的情况出现 &ndash;&gt;-->
+<!--            <AppenderRef ref="Console"/>-->
+<!--        </logger >-->
+<!--        <logger name="org.mybatis" level="INFO">-->
+<!--            <AppenderRef ref="Console"/>-->
+<!--        </logger>-->
+
+<!--        如果只是配置包下日志级别的话，使用以下配置-->
+        <logger name="org.springframework" level="INFO"/>
+        <logger name="org.mybatis" level="INFO"/>
+        <Root level="all">
+            <AppenderRef ref="Console"/>
+            <AppenderRef ref="InfoLog"/>
+            <AppenderRef ref="WarnLog"/>
+            <AppenderRef ref="ErrorLog"/>
+        </Root>
+    </loggers>
+</configuration>
