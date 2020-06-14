@@ -26,7 +26,7 @@
         <!-- 日志输出到文件的路径和文件名 根据项目情况更改 value 值 -->
 <!--        <property name="LOG_FILE_PATH" value="${sys:user.home}/logs"/>-->
 <!--        相对路径和绝对路径,建议不要使用相对路径，相对路径是根据当前项目路径开始的。-->
-        <property name="LOG_FILE_PATH" value="/tmp/logs"/>
+        <property name="LOG_FILE_PATH" value="/logs"/>
         <property name="LOG_FILE_NAME" value="log4j2"/>
     </Properties>
     <!--先定义所有的appender-->
