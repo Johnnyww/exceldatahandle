@@ -42,16 +42,26 @@
             </exclusions>
         </dependency>
 
+<!-- Spring Boot 的 Actuator 提供了很多生产级的特性，比如监控和度量Spring Boot 应用程序。Actuator 的这些特性可以通过众多 REST 接口、远程 shell 和 JMX 获得。-->
+<!-- 例如可以动态修改日志级别（无需重启应用，就能立刻刷新），。事实上，从 Spring Boot 1.5 开始，SpringBootActuator组件就已提供动态修改日志级别的能力。-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
+        </dependency>
+
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-tomcat</artifactId>
             <scope>provided</scope>
         </dependency>
+
+<!--        Junit测试框架-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
+
         <!-- 视图解析Thymeleaf -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
