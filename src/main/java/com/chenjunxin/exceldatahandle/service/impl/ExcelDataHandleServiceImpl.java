@@ -97,7 +97,7 @@ public class ExcelDataHandleServiceImpl implements ExcelDataHandleService {
                             if (ruleIndex != null && ruleIndex != -1) {
                                 Cell cell = row.getCell(ruleIndex);
                                 String ruleString;
-                                if (StringUtils.isNotBlank(cell.getStringCellValue())) {
+                                if (cell != null && StringUtils.isNotBlank(cell.getStringCellValue())) {
                                     ruleString = cell.getStringCellValue();
                                 } else {
                                     break;
