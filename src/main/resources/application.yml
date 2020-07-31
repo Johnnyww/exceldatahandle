@@ -16,6 +16,13 @@ spring:
 #    -Dspring.profiles.active=prod or -Dactive.file=dev-linux
             active: ${active.file}
 
+#  Spring Boot修改最大上传文件限制: 文档说明表示，每个文件的配置最大为1Mb，单次请求的文件的总数不能大于10Mb。
+#  要更改这个默认值需要在配置文件（如application.properties）中加入两个配置
+  servlet:
+        multipart:
+            max-file-size: 100MB
+            max-request-size: 1000MB
+
 # 指定 Log4j2 配置文件
 logging:
   config: ${logging.config.filepath}
