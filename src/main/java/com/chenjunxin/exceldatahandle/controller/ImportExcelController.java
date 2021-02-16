@@ -1,9 +1,8 @@
 package com.chenjunxin.exceldatahandle.controller;
 
 import com.chenjunxin.exceldatahandle.service.ExcelDataHandleService;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.util.IOUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
@@ -24,11 +23,10 @@ import java.util.UUID;
 /**
  * Created by chenjunxin on 2018/10/18
  */
+@Slf4j
 @Controller
 @RequestMapping
 public class ImportExcelController {
-
-    private static final Logger logger = LoggerFactory.getLogger(ImportExcelController.class);
 
     @Autowired
     ExcelDataHandleService excelDataHandleService;
@@ -66,26 +64,26 @@ public class ImportExcelController {
             fis = uploadFile.getInputStream();
             excelFileAddress = uploadFileUrl + uploadFile.getOriginalFilename();
             outputStream = new FileOutputStream(excelFileAddress);
-            excelDataHandleService.handleExcel(fis, outputStream, uploadFile.getOriginalFilename(),traceId);
+            excelDataHandleService.handleExcel(fis, outputStream, uploadFile.getOriginalFilename(), traceId);
             map.put("excelFileAddress", uploadFile.getOriginalFilename());
-            map.put("successFlag","true");
+            map.put("successFlag", "true");
             strBuilder.append(": 上传文件处理成功");
-            logger.info(strBuilder.toString());
+            log.info(strBuilder.toString());
         } catch (Exception e) {
             strBuilder.append(": 上传文件处理出现异常");
-            logger.error(strBuilder.toString(),e);
-            map.put("successFlag","false");
-            map.put("errorInfo",e.getMessage());
+            log.error(strBuilder.toString(), e);
+            map.put("successFlag", "false");
+            map.put("errorInfo", e.getMessage());
         } finally {
             if (fis != null) {
                 try {
                     fis.close();
                 } catch (IOException e) {
                     // StringBuilder重用 清空数据
-                    strBuilder.delete(0,strBuilder.length());
+                    strBuilder.delete(0, strBuilder.length());
                     strBuilder.append(traceId);
                     strBuilder.append(": InputStream close have exception");
-                    logger.error(strBuilder.toString(),e);
+                    log.error(strBuilder.toString(), e);
                 }
             }
             if (outputStream != null) {
@@ -93,10 +91,10 @@ public class ImportExcelController {
                     outputStream.close();
                 } catch (IOException e) {
                     // StringBuilder重用 清空数据
-                    strBuilder.delete(0,strBuilder.length());
+                    strBuilder.delete(0, strBuilder.length());
                     strBuilder.append(traceId);
                     strBuilder.append(": FileOutputStream close have exception");
-                    logger.error(strBuilder.toString(),e);
+                    log.error(strBuilder.toString(), e);
                 }
             }
         }
@@ -121,14 +119,14 @@ public class ImportExcelController {
             response.flushBuffer();
         } catch (IOException e) {
             strBuilder.append(": 下载文件出现异常");
-            logger.error(strBuilder.toString(),e);
+            log.error(strBuilder.toString(), e);
         } finally {
             if (fis != null) {
                 try {
                     fis.close();
                 } catch (IOException e) {
                     String errorStr = downloadPath + ": FileInputStream close have exception";
-                    logger.error(errorStr,e);
+                    log.error(errorStr, e);
                 }
             }
         }
